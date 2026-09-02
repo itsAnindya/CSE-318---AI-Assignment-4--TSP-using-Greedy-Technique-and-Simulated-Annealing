@@ -3,6 +3,8 @@
 using namespace std;
 
 constexpr double INF = numeric_limits<double>::infinity();
+constexpr const char INPUT_PATH[] = "input.txt";
+constexpr const char OUTPUT_PATH[] = "output.txt";
 
 // class Node {
 //   private:
@@ -228,6 +230,34 @@ class Graph {
     }
 };
 
-int main() {
+int main(int argc, char *argv[]) {
+    string input_path = INPUT_PATH;
+    string output_path = OUTPUT_PATH;
+    
+    if(argc > 1) {
+        input_path = argv[1];
+    }
+    if (argc > 2) {
+        output_path = argv[2];
+    }
+    
+    ifstream inputFile(input_path);
+    if(!inputFile.is_open()) {
+        cerr << "Error: Unable to open input file: " << input_path << endl;
+        return 1;
+    }
+    
+    ofstream outputFile(output_path);
+    if(!outputFile.is_open()) {
+        cerr << "Error: Unable to open output file: " << output_path << endl;
+        if(inputFile.is_open()) {
+            inputFile.close();
+        }
+        return 1;
+    }
+
+    inputFile.close();
+    outputFile.close();
+    
     return 0;
 }
