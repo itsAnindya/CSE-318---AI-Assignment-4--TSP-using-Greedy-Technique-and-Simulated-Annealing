@@ -47,7 +47,7 @@ struct Tour {
     double cost;
     vector<size_t> path;
 
-    Tour(double c = 0.0, const vector<size_t> &p = {}) : cost(c), path(p) {}
+    Tour(double c = 0.0, const vector<size_t>& p = {}) : cost(c), path(p) {}
 
     void addNode(size_t id, double weight) {
         path.push_back(id);
@@ -61,7 +61,7 @@ struct Tour {
 };
 
 class Graph {
-  private:
+   private:
     size_t size;
     size_t start = 0;
     size_t visitedCount = 0;
@@ -104,7 +104,7 @@ class Graph {
         return false;
     }
 
-  public:
+   public:
     //----------------------- Constructors
     Graph(size_t size) : size(size), start(0), visitedCount(0) {
         // this->size = size;
@@ -115,7 +115,7 @@ class Graph {
         //     nodes[i].setID(i);
         // }
         adjacencyMatrix.resize(size);
-        for (auto &v : adjacencyMatrix) {
+        for (auto& v : adjacencyMatrix) {
             v.resize(size, INF);
         }
         visited.resize(size, false);
@@ -131,7 +131,7 @@ class Graph {
     //    // visited.resize(size, false);
     // }
 
-    Graph(const vector<vector<double>> &adj) : size(adj.size()), start(0), visitedCount(0), adjacencyMatrix(adj) {
+    Graph(const vector<vector<double>>& adj) : size(adj.size()), start(0), visitedCount(0), adjacencyMatrix(adj) {
         // this->size = adjacencyMatrix.size();
         // this->adjacencyMatrix = adj;
         // this->start = 0;
@@ -208,11 +208,11 @@ class Graph {
     //     return nodes;
     // }
 
-    const vector<double> &getAdjacencyList(size_t id) const {
+    const vector<double>& getAdjacencyList(size_t id) const {
         return adjacencyMatrix[id];
     }
 
-    const vector<vector<double>> &getAdjacencyMatrix() const {
+    const vector<vector<double>>& getAdjacencyMatrix() const {
         return adjacencyMatrix;
     }
 
@@ -230,34 +230,32 @@ class Graph {
     }
 };
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
     string input_path = INPUT_PATH;
     string output_path = OUTPUT_PATH;
-    
-    if(argc > 1) {
+
+    if (argc > 1) {
         input_path = argv[1];
     }
     if (argc > 2) {
         output_path = argv[2];
     }
-    
+
     ifstream inputFile(input_path);
-    if(!inputFile.is_open()) {
+    if (!inputFile.is_open()) {
         cerr << "Error: Unable to open input file: " << input_path << endl;
         return 1;
     }
-    
+
     ofstream outputFile(output_path);
-    if(!outputFile.is_open()) {
+    if (!outputFile.is_open()) {
         cerr << "Error: Unable to open output file: " << output_path << endl;
-        if(inputFile.is_open()) {
-            inputFile.close();
-        }
+        if (inputFile.is_open()) inputFile.close();
         return 1;
     }
 
-    inputFile.close();
-    outputFile.close();
-    
+    if (inputFile.is_open()) inputFile.close();
+    if (outputFile.is_open()) outputFile.close();
+
     return 0;
 }
