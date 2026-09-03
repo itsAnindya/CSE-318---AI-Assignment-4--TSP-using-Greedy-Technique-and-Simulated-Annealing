@@ -250,12 +250,12 @@ int main(int argc, char* argv[]) {
     ofstream outputFile(output_path);
     if (!outputFile.is_open()) {
         cerr << "Error: Unable to open output file: " << output_path << endl;
-        if (inputFile.is_open()) inputFile.close();
+        while (inputFile.is_open()) inputFile.close();
         return 1;
     }
 
-    if (inputFile.is_open()) inputFile.close();
-    if (outputFile.is_open()) outputFile.close();
+    while (inputFile.is_open()) inputFile.close();
+    while (outputFile.is_open()) outputFile.close();
 
     return 0;
 }
