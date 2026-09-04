@@ -2,9 +2,15 @@
 
 using namespace std;
 
-constexpr double INF = numeric_limits<double>::infinity();
+constexpr const double INF = numeric_limits<double>::infinity();
 constexpr const char INPUT_PATH[] = "input.txt";
 constexpr const char OUTPUT_PATH[] = "output.txt";
+
+constexpr const double INITIAL_TEMPERATURE = 1000.0;
+constexpr const double COOLING_RATE = 0.995;
+constexpr const double MIN_TEMPERATURE = 0.001;
+constexpr const double ITERATION_PER_TEMPERATURE = 100;
+constexpr const size_t MAX_ITERATIONS = 100000; 
 
 // class Node {
 //   private:
@@ -42,12 +48,12 @@ constexpr const char OUTPUT_PATH[] = "output.txt";
 //         isVisited = visited;
 //     }
 // };
-
+// Dumb structure, does not have access to any graph instance. Must be handled by graph class.
 struct Tour {
     double cost;
     vector<size_t> path;
 
-    Tour(double c = 0.0, const vector<size_t>& p = {}) : cost(c), path(p) {}
+    Tour(const vector<size_t> &p = {}, double c = 0.0) : cost(c), path(p) {}
 
     void addNode(size_t id, double weight) {
         path.push_back(id);
@@ -61,7 +67,7 @@ struct Tour {
 };
 
 class Graph {
-   private:
+  private:
     size_t size;
     size_t start = 0;
     size_t visitedCount = 0;
@@ -104,7 +110,14 @@ class Graph {
         return false;
     }
 
-   public:
+    bool randomDecision(double probability) const {
+        static random_device rd;
+        static mt19937 gen(rd());
+        uniform_real_distribution<double> dis(0.0, 1.0);
+        return dis(gen) <= probability;
+    }
+
+  public:
     //----------------------- Constructors
     Graph(size_t size) : size(size), start(0), visitedCount(0) {
         // this->size = size;
@@ -115,7 +128,7 @@ class Graph {
         //     nodes[i].setID(i);
         // }
         adjacencyMatrix.resize(size);
-        for (auto& v : adjacencyMatrix) {
+        for (auto &v : adjacencyMatrix) {
             v.resize(size, INF);
         }
         visited.resize(size, false);
@@ -131,7 +144,7 @@ class Graph {
     //    // visited.resize(size, false);
     // }
 
-    Graph(const vector<vector<double>>& adj) : size(adj.size()), start(0), visitedCount(0), adjacencyMatrix(adj) {
+    Graph(const vector<vector<double>> &adj) : size(adj.size()), start(0), visitedCount(0), adjacencyMatrix(adj) {
         // this->size = adjacencyMatrix.size();
         // this->adjacencyMatrix = adj;
         // this->start = 0;
@@ -208,11 +221,11 @@ class Graph {
     //     return nodes;
     // }
 
-    const vector<double>& getAdjacencyList(size_t id) const {
+    const vector<double> &getAdjacencyList(size_t id) const {
         return adjacencyMatrix[id];
     }
 
-    const vector<vector<double>>& getAdjacencyMatrix() const {
+    const vector<vector<double>> &getAdjacencyMatrix() const {
         return adjacencyMatrix;
     }
 
@@ -230,7 +243,7 @@ class Graph {
     }
 };
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
     string input_path = INPUT_PATH;
     string output_path = OUTPUT_PATH;
 
@@ -250,12 +263,15 @@ int main(int argc, char* argv[]) {
     ofstream outputFile(output_path);
     if (!outputFile.is_open()) {
         cerr << "Error: Unable to open output file: " << output_path << endl;
-        while (inputFile.is_open()) inputFile.close();
+        while (inputFile.is_open())
+            inputFile.close();
         return 1;
     }
 
-    while (inputFile.is_open()) inputFile.close();
-    while (outputFile.is_open()) outputFile.close();
+    while (inputFile.is_open())
+        inputFile.close();
+    while (outputFile.is_open())
+        outputFile.close();
 
     return 0;
 }
