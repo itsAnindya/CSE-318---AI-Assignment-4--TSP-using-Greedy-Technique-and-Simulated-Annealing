@@ -9,7 +9,7 @@ constexpr const char OUTPUT_PATH[] = "output.txt";
 constexpr const double INITIAL_TEMPERATURE = 1000.0;
 constexpr const double COOLING_RATE = 0.995;
 constexpr const double MIN_TEMPERATURE = 0.001;
-constexpr const double ITERATION_PER_TEMPERATURE = 100;
+constexpr const size_t ITERATION_PER_TEMPERATURE = 100;
 constexpr const size_t MAX_ITERATIONS = 100000;
 constexpr bool SOLUTION_INITIALIZE_GREEDY = true;
 constexpr unsigned NEIGHBOUR_SELECTION_METHOD = 0; // 0: swap, 1: reverse segment
@@ -265,7 +265,7 @@ class SimulatedAnnealing {
         static random_device rd;
         static mt19937 gen(rd());
         uniform_real_distribution<double> dis(0.0, 1.0);
-        return dis(gen) <= probability;
+        return dis(gen) < probability;
     }
 
     void solutionInitialize_greedy() {
@@ -346,24 +346,29 @@ class SimulatedAnnealing {
 
     Tour simulatedAnnealing() {
         initialize();
-        Tour &current = solution;
+        Tour current = solution;
+        Tour best = solution;
         double delta;
-        for(size_t i = 0; i < iterations; i++) {
+        for (size_t i = 0; i < iterations; i++) {
             Tour neighbourSolution = neighbour();
             delta = neighbourSolution.cost - current.cost;
 
-            if(delta < 0 || randomDecision(exp(-delta / temperature))) {
+            if (delta < 0 || randomDecision(exp(-delta / temperature))) {
                 current = neighbourSolution;
+                if (current.cost < best.cost) {
+                    best = current;
+                }
             }
 
-            cool();
+            if ((i + 1) % ITERATION_PER_TEMPERATURE == 0)
+                cool();
 
-            if(temperature < MIN_TEMPERATURE) {
+            if (temperature < MIN_TEMPERATURE) {
                 break;
             }
         }
-        
-        return current;
+
+        return best;
     }
 
   public:
